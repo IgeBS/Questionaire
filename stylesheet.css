@@ -136,7 +136,7 @@ body {
 }
 
 .interview {
-  width: calc(var(--width) * 0.8);
+  width: var(--width);
   background-color: none;
 }
 
