@@ -137,6 +137,7 @@ body {
 
 .interview {
   width: var(--width);
+  max-width: 1170px;
   background-color: none;
 }
 
