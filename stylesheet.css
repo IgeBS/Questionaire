@@ -91,7 +91,7 @@ body {
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
   transition: background-color 0.1 ease-in-out;
-  cursor: pot;
+  cursor: pointer;
 }
 
 .nav__link:not(.highlight):hover {
@@ -141,13 +141,12 @@ body {
 }
 
 .interview {
-   width: calc(var(--width) * 0.97);
-  max-width: 1170px;
+  width: calc(var(--width) * 0.97);
   background-color: none;
 }
 
 .separator {
-    width: calc(var(--width) * 0.97);
+  min-width: calc(var(--width) * 0.8);
   max-width: calc(var(--width) * 0.8);
   background-color: red;
 }
