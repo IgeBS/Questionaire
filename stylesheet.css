@@ -141,13 +141,13 @@ body {
 }
 
 .interview {
-  min-width: 100%;
+   width: calc(var(--width) * 0.97);
   max-width: 1170px;
   background-color: none;
 }
 
 .separator {
-  min-width: calc(var(--width) * 0.8);
+    width: calc(var(--width) * 0.97);
   max-width: calc(var(--width) * 0.8);
   background-color: red;
 }
