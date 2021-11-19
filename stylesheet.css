@@ -91,7 +91,7 @@ body {
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
   transition: background-color 0.1 ease-in-out;
-  cursor: pointer;
+  cursor: pot;
 }
 
 .nav__link:not(.highlight):hover {
@@ -141,7 +141,7 @@ body {
 }
 
 .interview {
-  width: 100%;
+  min-width: 100%;
   max-width: 1170px;
   background-color: none;
 }
