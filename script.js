@@ -67,14 +67,9 @@ const init = () => {
     );
   };
 
-  goTo();
-
   const viewResult = () => {
     const topics = document.querySelectorAll(".topics");
     const arr = [];
-
-    let count = 0;
-    let obj = {};
 
     const getAnswer = (el) => {
       const answer = el.querySelector(".textarea");
@@ -94,6 +89,15 @@ const init = () => {
       } else {
         return "";
       }
+    };
+
+    const getAverage = (arr) => {
+      let avg = "";
+      const arrFiltered = arr.filter((r) => r !== "");
+      avg = arrFiltered.reduce((acc, n, i, arrFiltered) => {
+        return acc + Number(n) / arrFiltered.length;
+      }, 0);
+      return avg === 0 ? "" : avg.toFixed(2);
     };
 
     const getAnswers = (el) => {
@@ -118,41 +122,81 @@ const init = () => {
     };
 
     topics.forEach((topic, i) => {
+      // FORMAT FOR INFO
       if (i === 0) {
-        topic.querySelectorAll("input").forEach((el) => {
-          obj["info" + count] = el.value;
-          count = count + 1;
-        });
+        let obj = { topic: "INFORMATION", answers: [] };
+        obj.answers.push(
+          Array.from(topic.querySelectorAll("input")).map((el) => el.value)
+        );
+        arr.push(obj);
       }
 
-      /*   //   if (i === 0) {
-      //     let obj = { topic: "INFORMATION", answers: [] };
-      //     obj.answers.push(
-      //       Array.from(topic.querySelectorAll("input")).map((el) => el.value)
-      //     );
-      //     arr.push(obj);
-      //   }
+      // FORMAT FOR TOPICS
+      if (i !== 0 && i !== 1 && i !== topics.length - 1) {
+        const { answers, scores } = getAnswers(topic);
+        const obj = {
+          topic: topic.querySelector(".topic__title").innerText,
+          average: "",
+          answers: answers,
+          scores: scores,
+        };
 
-      //   if (i !== 0 && i !== topics.length - 1) {
-      //     const { answers, scores } = getAnswers(topic);
-      //     const obj = {
-      //       topic: topic.querySelector(".topic__title").innerText,
-      //       average: "",
-      //       answers: answers,
-      //       scores: scores,
-      //     };
-      //     arr.push(obj);
-      //   } */
+        if (i === topics.length - 2) {
+          obj.answers.pop();
+          obj.scores.pop();
+        }
+        obj.average = getAverage(obj.scores);
+        arr.push(obj);
+      }
+
+      // FORMAT FOR ADDITOINAL ASSESSMENT
+      if (i === topics.length - 1) {
+        const { answers, scores } = getAnswers(topic);
+        const obj = {
+          topic: topic.querySelector(".topic__title").innerText,
+          average: "",
+          answers: answers,
+          scores: scores,
+        };
+        obj.scores.pop();
+        obj.average = getAverage(obj.scores);
+        obj.scores.push(obj.answers.pop());
+        obj.answers = Array.from(
+          topic.querySelectorAll(".topic__questions-answers")
+        ).map((el) => el.querySelector("span").innerText);
+        arr.push(obj);
+      }
     });
-    console.log(obj);
-    return obj;
+
+    Confirm.open({
+      title: "INTERVIEW SUMMARY",
+      okText: "CONFIRM",
+      cancelText: "CANCEL",
+      data: arr,
+      onok: () => submitData(),
+      oncancel: () => "",
+    });
   };
 
-  const submitData = () => {
+  const getResult = () => {
+    const arr = Array.from(document.querySelectorAll(".data")).map((el, i) => {
+      return [i, el.innerText];
+    });
+
+    return arr;
+  };
+
+  async function submitData() {
     // Push data in Google Sheets from external app :
-    const obj = viewResult();
+    const obj = Object.fromEntries(getResult());
+    const arr = [];
+
+    for (const [key, value] of Object.entries(obj)) {
+      arr.push(value);
+    }
+
     const request_url =
-      "https://script.google.com/macros/s/AKfycbx6q4yu-BWuC5Z-Nj52lVzF-4KyMx6uprrZFQ6NlyZbGO0YTd-gue_4VBsTvFKl9-Ekwg/exec";
+      "https://script.google.com/macros/s/AKfycbwhMQMClG6d6MD4aNWz9Dq7eKfPG6hEjqglrLQTmN2ay78MD9AYp3uH4el1bDBHzqJ-/exec";
 
     fetch(request_url, {
       method: "POST",
@@ -165,100 +209,11 @@ const init = () => {
       redirect: "follow",
       body: JSON.stringify(obj),
     });
-  };
+  }
 
-  document.querySelector(".button").addEventListener("click", submitData);
+  goTo();
+
+  document.querySelector(".button").addEventListener("click", viewResult);
 };
 
 document.addEventListener("DOMContentLoaded", init);
-
-/* <div class="confirm">
-      <div class="confirm__window">
-        <div class="confirm__titlebar">
-          <span class="confirm__title">INTERVIEW RESULT</span>
-          <button class="confirm__close">&times</button>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Topics</div>
-            <div class="">Average</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__content">
-          <div class="confirm__topics">
-            <div class="">Interview</div>
-            <div class="">4</div>
-          </div>
-        </div>
-        <div class="confirm__buttons">
-          <button
-            class="confirm__button confirm__button--ok confirm__button--fill"
-          >
-            ${options.okText}
-          </button>
-          <button class="confirm__button confirm__button--cancel">
-            ${options.cancelText}
-          </button>
-        </div>
-      </div
-    </div> */
